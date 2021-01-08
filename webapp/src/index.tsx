@@ -11,6 +11,7 @@ const rpc = new JsonRpc(''); // nodeos and web server are on same port
 interface PostData {
     id?: number;
     user?: string;
+    likes: number;
     reply_to?: number;
     content?: string;
 };
@@ -32,6 +33,7 @@ class PostForm extends React.Component<{}, PostFormState> {
             data: {
                 id: 0,
                 user: 'bob',
+                likes: 0,
                 reply_to: 0,
                 content: 'This is a test'
             },
@@ -92,6 +94,14 @@ class PostForm extends React.Component<{}, PostFormState> {
                         /></td>
                     </tr>
                     <tr>
+                        <td>Likes</td>
+                        <td><input
+                            style={{ width: 500 }}
+                            value={this.state.likes}
+                            onChange={e => this.setState({ likes: e.target.value })}
+                        /></td>
+                    </tr>
+                    <tr>
                         <td>Reply To</td>
                         <td><input
                             style={{ width: 500 }}
@@ -135,13 +145,14 @@ class Messages extends React.Component<{}, { content: string }> {
                     json: true, code: 'talk', scope: '', table: 'message', limit: 1000,
                 });
                 let content =
-                    'id          reply_to      user          content\n' +
+                    'id          reply_to    user          likes    content\n' +
                     '=============================================================\n';
                 for (let row of rows.rows)
                     content +=
                         (row.id + '').padEnd(12) +
                         (row.reply_to + '').padEnd(12) + '  ' +
                         row.user.padEnd(14) +
+                        row.likes.padEbd(9) +
                         row.content + '\n';
                 this.setState({ content });
             } catch (e) {
